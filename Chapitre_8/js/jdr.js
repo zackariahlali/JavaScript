@@ -28,6 +28,7 @@ var Personnage = {
 	}
 };
 
+
 var joueur = Object.create(Personnage);
 // Initialise le joueur
 joueur.initjoueur = function (nom, sante, force) {
@@ -52,6 +53,7 @@ joueur.combattre = function (adversaire) {
 	}
 };
 
+
 var adversaire = Object.create(Personnage);
 // Initialise l'advervaisre
 adversaire.initAdversaire = function (nom, sante, force, race, valeur) {
@@ -68,8 +70,11 @@ joueur01.initjoueur("Aurora", 150, 25);
 //perso01.sante = 150;
 //perso01.force = 25;
 
-var joueur02 = Object.create(joueur);
+var joueur02 = joueur;
 joueur02.initjoueur("Glacuis", 130, 35);
+
+//var joueur02 = Object.create(joueur);
+//joueur02.initjoueur("Glacuis", 130, 35);
 
 console.log("Bienvenue dans ce jeu d'aventure! Voici nos courageux héros :");
 console.log(joueur01.decrire());
