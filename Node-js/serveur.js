@@ -1,7 +1,8 @@
-console.log("Premier test de code avec Node.js");
+//console.log("Premier test de code avec Node.js");
 
-var http = require("http");
-var url = require("url");
+var http = require("http"); // Fait appel à http.js
+var url = require("url"); // Fait appel à url.js
+
 var querystring = require("querystring");
 
 var server = http.createServer(function (req, res) {
