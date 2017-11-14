@@ -11,7 +11,7 @@ app.use(session({secret: "todotopsecret"}))
 
 // S'il n'yas pas de ToDolist dans la session,
 // On en crée une vide sous forme d'array avant la suite
-app.use(function(req, res, next) {
+.use(function(req, res, next) {
 	if (typeof(req.session.todolist) == "undefined") {
 		req.session.todolist = [];
 	}
@@ -19,24 +19,33 @@ app.use(function(req, res, next) {
 })
 
 // On affiche la ToDolist et le formulaire
-app.get("/todo", function(req, res) {
+.get("/todo", function(req, res) {
 	res.render("todo.ejs", {todolist: req.session.todolist});
-});
+})
 
 // On ajoute un élément à la TODolist
-app.post("/todo/ajouter/",urlencodedParser, function(req, res) {
+.post("/todo/ajouter/",urlencodedParser, function(req, res) {
 	if (req.body.newtodo != "") {
 		req.session.todolist.push(req.body.newtodo);
+	} else {
+		throw "Le champ est vide !"
 	}
 	res.redirect("/todo");
-});
+})
 
 // Supprime un élément de la TODolist
-app.get("/todo/supprimer/:id", function(req, res) {
+.get("/todo/supprimer/:id", function(req, res) {
 	if (req.params.id != "") {
 		req.session.todolist.splice(req.params.id, 1);
+	} else {
+		throw "Le champ est vide"
 	}
 	res.redirect("/todo");
+})
+
+.use(function (req, res, next) {
+	res.setHeader("Content-Type", "text/plain");
+	res.send(404, "Page introuvable");
 })
 
 .listen(8080);
