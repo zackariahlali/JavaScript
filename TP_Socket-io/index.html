@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Chat en temps réel</title>
+	<style>
+		#zone_chat strong {
+			color: white;
+			background-color: black;
+			padding: 2px;
+		}
+
+	</style>
+</head>
+
+<body>
+	<h1>Le chat</h1>
+
+	<form action="/" method="post" id="formulaire_chat">
+		<input type="text" name="message" id="message" placeholder="Ecrivez votre message ici ..." size="50" autofocus />
+		<input type="submit" id="envoie_message" value="Envoyer" />
+	</form>
+
+	<section id="zone_chat">
+
+	</section>
+
+	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		//Connexion à socket.io
+		var socket = io.connect("http://localhost:8080");
+
+		// On demande on client de renseigner son pseudo
+		var pseudo = prompt("Quel est votre pseudo ?");
+		socket.emit("nouveau_client", pseudo);
+		document.title = pseudo + " - " + document.title;
+
+		// Quend le serveur reçoit un message il l'insére dans la page
+		socket.on("message", function(data) {
+			insereMessage(data.pseudo, data.message)
+		})
+
+		// Quand un nouveau client se connecte, on informe les autres clients
+		socket.on("nouveau_client", function(pseudo) {
+			$("#zone_chat").prepend("<p><em>" + pseudo + " vient de se connecter ! </em></p>");
+		})
+
+		// Lorsque l'on envoie le formulaire, on transmet le message et on l'affiche sur la page
+		$("#formulaire_chat").submit(function() {
+			var message = $("#message").val();
+			socket.emit("message", message); // Transmet le message aux autre client connecter
+			insereMessage(pseudo, message); // Affiche le message sur la page de l'émetteur 
+			$("#message").val("").focus(); // Vide la zone de chat et remet le focus dessus
+			return false; // Bloque l'envoie 'classique du formulaire
+		});
+
+		// Ajouter un message dans la page
+		function insereMessage(pseudo, message) {
+			$("#zone_chat").prepend("<p><strong>" + pseudo + "</strong> " + message + "</p>");
+		}
+
+	</script>
+
+</body>
+
+</html>
